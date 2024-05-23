@@ -1,8 +1,13 @@
 // Import express
-require('dotenv').config();
-const express = require("express")
-const mongoose = require("mongoose");
-const cors = require("cors");
+import express from 'express';
+import cors from 'cors';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import ProjectAssignment from './models/ProjectAssignment.js';
+import setupRoutes from './routes/index.js';
+
+
+dotenv.config();
 
 // Create an Express application
 const app = express()
@@ -19,9 +24,28 @@ mongoose.connect(CONNECTION_URL)
     .then(() => console.log("Connected to MongoDB!"))
     .catch(err => console.error("Error connecting to MongoDB:", err));
 
+
 // Serve static files from the 'dist' directory
 app.use(express.static("dist"));
 
+// Routes
+setupRoutes(app);
+
+
+app.get('/api/project_assignments', async (req, res) => {
+    try {
+        const assignments = await ProjectAssignment.find()
+            .populate('employee_id')
+            .populate('project_code');
+
+        
+        res.json(assignments);
+        //console.log('serverassignments:' + assignments);
+    } catch (error) {
+        console.error("Error fetching project assignments:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
 
 // Start the server
 app.listen(PORT, () => {

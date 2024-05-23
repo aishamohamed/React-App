@@ -1,9 +1,14 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import {createRoot} from 'react-dom/client';
+import App from './components/App.js';
 
-class Comp extends React.Component {
-    render() {
-        return <h2>Hi, I have changed!</h2>;
+// Ensure the DOM is fully loaded before rendering
+document.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('root');
+    if (container) {
+        const root = createRoot(container);
+        root.render(<App />);
+    } else {
+        console.error("Target container 'root' not found.");
     }
-}
-ReactDOM.render(<Comp />, document.getElementById('index'));
+});
