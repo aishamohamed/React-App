@@ -31,14 +31,17 @@ app.use(express.static("dist"));
 // Routes
 setupRoutes(app);
 
-
+// Define a GET endpoint for fetching project assignments
 app.get('/api/project_assignments', async (req, res) => {
     try {
+        // Fetch all project assignments from the database
         const assignments = await ProjectAssignment.find()
-            .populate('employee_id')
-            .populate('project_code');
+            .populate('employee_id')      // Populate the 'employee_id' field with the related Employee document
+            .populate('project_code')  // Populate the 'project_code' field with the related Project document
+            .sort({ start_date: -1 }) // Sort by start_date in descending order
+            .limit(5); // Limit the results to 5
 
-        
+        // Send the fetched assignments as a JSON response to the client
         res.json(assignments);
         //console.log('serverassignments:' + assignments);
     } catch (error) {

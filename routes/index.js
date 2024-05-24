@@ -8,10 +8,17 @@ const Routes = function(app) {
 
     // Create a new Employee
     app.post('/api/employees', async (req, res) => {
+        // Extract full_name, email, and hashed_password from the request body
         const { full_name, email, hashed_password } = req.body;
         try {
+            // Create a new Employee instance with the extracted data
             const newEmployee = new Employee({ full_name, email, hashed_password });
+
+            // Save the new employee to the database
+            //.save() is an asynchronous operation that returns a promise.
             await newEmployee.save();
+
+            // Send a 201 Created status and the new employee data as a response
             res.status(201).send(newEmployee);
         } catch (error) {
             console.log('error adding a new employee: ', error);
@@ -54,13 +61,16 @@ const Routes = function(app) {
         }
 
         try {
+            //create new project instance
             const newAssignment = new ProjectAssignment({
                 employee_id: employee._id,
                 project_code: project._id,
                 start_date: new Date(start_date)
             });
-    
+            
+            // save to the databse
             await newAssignment.save();
+            // send status code and new assignment as a response
             res.status(201).send(newAssignment);
         } catch (error) {
             res.status(400).send(error.message);

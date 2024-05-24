@@ -4,30 +4,28 @@ import '../style.css';
 
 
 function ProjectAssignments() {
-    const [assignments, setAssignments] = useState([]);
-    const [error, setError] = useState(null);
+    const [assignments, setAssignments] = useState([]); // Initialize state for assignments
+    const [error, setError] = useState(null);  // Initialize state for error handling
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const result = await axios('http://localhost:3000/api/project_assignments');
-                //console.log("Fetched data:", result.data); 
-                setAssignments(result.data);
+                const result = await axios('http://localhost:3000/api/project_assignments'); // Fetch data from server
+                setAssignments(result.data);  // Update state with fetched data
             } catch (err) { // Using err instead of error to avoid confusion with the state
                 console.error("Error fetching project assignments:", err);
-                setError("Failed to fetch data. Please try again later.");
+                setError("Failed to fetch data. Please try again later."); // Update error state
             }
         };
 
-        fetchData();
-        const interval = setInterval(fetchData, 60000); // refresh every minute
-        return () => clearInterval(interval);
+        fetchData();  // Call fetchData when component mounts
+        const interval = setInterval(fetchData, 60000); // Set interval to fetch data every minute
+        return () => clearInterval(interval); // Clean up interval on unmount
     }, []);
 
-    //console.log("Data to render:", assignments); 
 
     if (error) {
-        return <div>{error}</div>;
+        return <div>{error}</div>; // Render error message if there's an error
     }
 
     return (
